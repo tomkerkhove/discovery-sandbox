@@ -33,7 +33,8 @@ namespace Promitor.Discovery.API.Controllers
                 var resource = new List<ContainerRegistryResourceDefinition>
                 {
                     new ContainerRegistryResourceDefinition("ABC", "123", "registry-1"),
-                    new ContainerRegistryResourceDefinition("ABC", "123", "registry-2")
+                    new ContainerRegistryResourceDefinition("ABC", "123", "registry-2"),
+                    new ContainerRegistryResourceDefinition("ABC", "123", "registry-3")
                 };
                 return Ok(resource);
             }

@@ -24,10 +24,13 @@ namespace Promitor.Discovery.Worker
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.UtcNow);
 
                     var containerRegistries = await _resourceDiscoveryClient.GetAsync("container-registry-landscape");
                     _logger.LogInformation("Found {Count} container registries", containerRegistries.Count);
+
+                    var appPlans = await _resourceDiscoveryClient.GetAsync("app-plan-landscape");
+                    _logger.LogInformation("Found {Count} app plans", appPlans.Count);
 
                     await Task.Delay(1000, stoppingToken);
                 }

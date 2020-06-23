@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Promitor.Discovery.Contracts;
 using Promitor.Discovery.Contracts.ResourceTypes;
 
 namespace Promitor.Discovery.Worker.Discovery
@@ -19,12 +20,12 @@ namespace Promitor.Discovery.Worker.Discovery
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<List<ContainerRegistryResourceDefinition>> GetAsync(string resourceCollectionName)
+        public async Task<List<AzureResourceDefinition>> GetAsync(string resourceCollectionName)
         {
             var uri = $"/api/v1/resources/collections/{resourceCollectionName}/discovery";
             var rawResponse = await SendGetRequestAsync(uri);
 
-            var foundResources = JsonConvert.DeserializeObject<List<ContainerRegistryResourceDefinition>>(rawResponse);
+            var foundResources = JsonConvert.DeserializeObject<List<AzureResourceDefinition>>(rawResponse);
             return foundResources;
         }
 
