@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+  promitor.discovery.api:
+    image: promitordiscoveryapi
+    build:
+      context: .
+      dockerfile: Promitor.Discovery.API/Dockerfile
+
+  promitor.discovery.worker:
+    image: promitordiscoveryworker
+    build:
+      context: .
+      dockerfile: Promitor.Discovery.Worker/Dockerfile
+
