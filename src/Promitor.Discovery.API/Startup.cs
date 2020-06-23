@@ -12,6 +12,7 @@ using Serilog;
 using Serilog.Configuration;
 using Serilog.Events;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Promitor.Discovery.API
@@ -50,8 +51,8 @@ namespace Promitor.Discovery.API
 
                 RestrictToJsonContentType(options);
                 AddEnumAsStringRepresentation(options);
-
-            });
+            })
+            .AddNewtonsoftJson(setup=>setup.SerializerSettings.TypeNameHandling=TypeNameHandling.Objects);
 
             services.AddHealthChecks();
             services.AddHttpCorrelation();

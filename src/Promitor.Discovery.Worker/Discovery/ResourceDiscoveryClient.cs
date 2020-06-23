@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Promitor.Discovery.Contracts;
-using Promitor.Discovery.Contracts.ResourceTypes;
 
 namespace Promitor.Discovery.Worker.Discovery
 {
     public class ResourceDiscoveryClient
     {
-        private readonly ILogger<ResourceDiscoveryClient> _logger;
+        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings {TypeNameHandling = TypeNameHandling.Objects};
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public ResourceDiscoveryClient(IHttpClientFactory httpClientFactory, ILogger<ResourceDiscoveryClient> logger)
+        public ResourceDiscoveryClient(IHttpClientFactory httpClientFactory)
         {
-            _logger = logger;
             _httpClientFactory = httpClientFactory;
         }
 
@@ -25,7 +22,7 @@ namespace Promitor.Discovery.Worker.Discovery
             var uri = $"/api/v1/resources/collections/{resourceCollectionName}/discovery";
             var rawResponse = await SendGetRequestAsync(uri);
 
-            var foundResources = JsonConvert.DeserializeObject<List<AzureResourceDefinition>>(rawResponse);
+            var foundResources = JsonConvert.DeserializeObject<List<AzureResourceDefinition>>(rawResponse, _serializerSettings);
             return foundResources;
         }
 

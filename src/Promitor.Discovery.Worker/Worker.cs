@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Promitor.Discovery.Contracts.ResourceTypes;
 using Promitor.Discovery.Worker.Discovery;
 
 namespace Promitor.Discovery.Worker
@@ -26,11 +27,8 @@ namespace Promitor.Discovery.Worker
                 {
                     _logger.LogInformation("Worker running at: {time}", DateTimeOffset.UtcNow);
 
-                    var containerRegistries = await _resourceDiscoveryClient.GetAsync("container-registry-landscape");
-                    _logger.LogInformation("Found {Count} container registries", containerRegistries.Count);
-
-                    var appPlans = await _resourceDiscoveryClient.GetAsync("app-plan-landscape");
-                    _logger.LogInformation("Found {Count} app plans", appPlans.Count);
+                    await GetContainerRegistryInfoAsync();
+                    await GetAppPlanInfoAsync();
 
                     await Task.Delay(1000, stoppingToken);
                 }
@@ -38,6 +36,34 @@ namespace Promitor.Discovery.Worker
             catch (Exception ex)
             {
                 _logger.LogCritical(ex, "Woops!");
+            }
+        }
+
+        private async Task GetAppPlanInfoAsync()
+        {
+            var appPlans = await _resourceDiscoveryClient.GetAsync("app-plan-landscape");
+            _logger.LogInformation("Found {Count} app plans", appPlans.Count);
+
+            foreach (var entry in appPlans)
+            {
+                if (entry is AppPlanResourceDefinition appPlanResource)
+                {
+                    _logger.LogInformation("Found {AppPlan} app plan", appPlanResource.AppPlanName);
+                }
+            }
+        }
+
+        private async Task GetContainerRegistryInfoAsync()
+        {
+            var containerRegistries = await _resourceDiscoveryClient.GetAsync("container-registry-landscape");
+            _logger.LogInformation("Found {Count} container registries", containerRegistries.Count);
+
+            foreach (var entry in containerRegistries)
+            {
+                if(entry is ContainerRegistryResourceDefinition containerRegistryResource)
+                {
+                    _logger.LogInformation("Found {RegistryName} container registry", containerRegistryResource.RegistryName);
+                }
             }
         }
     }
